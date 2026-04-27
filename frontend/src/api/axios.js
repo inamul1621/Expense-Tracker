@@ -1,8 +1,14 @@
 import axios from 'axios';
 
 // Use Vite proxy in dev, direct URL in production
+const prodURL = import.meta.env.VITE_API_URL;
+
+if (import.meta.env.PROD && !prodURL) {
+  console.error('ERROR: VITE_API_URL environment variable is not set on Vercel!');
+}
+
 const baseURL = import.meta.env.PROD
-  ? import.meta.env.VITE_API_URL
+  ? prodURL || '/api'
   : '/api';
 
 const api = axios.create({

@@ -112,39 +112,13 @@ git push -u origin main
 
 ---
 
-## Step 4: Update Frontend API URL
+## Step 4: Deploy Frontend to Vercel (Free)
 
-### 4.1 Update Axios Base URL
-
-Edit `frontend/src/api/axios.js`:
-
-```javascript
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: 'https://expense-tracker-api.onrender.com/api', // Your Render URL
-});
-
-// ... rest of file
-```
-
-### 4.2 Commit Changes
-
-```powershell
-git add .
-git commit -m "Update API URL for production"
-git push
-```
-
----
-
-## Step 5: Deploy Frontend to Vercel (Free)
-
-### 5.1 Create Vercel Account
+### 4.1 Create Vercel Account
 1. Go to [vercel.com](https://vercel.com)
 2. Sign up with GitHub
 
-### 5.2 Import Project
+### 4.2 Import Project
 1. Click **Add New Project**
 2. Import `smart-expense-tracker` from GitHub
 3. Configure:
@@ -156,43 +130,42 @@ git push
    | Build Command | `npm run build` |
    | Output Directory | `dist` |
 
-4. Click **Deploy**
+4. **IMPORTANT - Add Environment Variable BEFORE deploying:**
+   
+   Click **Environment Variables** and add:
+   
+   | Name | Value |
+   |------|-------|
+   | `VITE_API_URL` | `https://expense-tracker-api.onrender.com/api` |
+   
+   > Replace `expense-tracker-api` with your actual Render service name
 
-5. Your app will be live at:
+5. Click **Deploy**
+
+6. Your app will be live at:
    ```
    https://smart-expense-tracker.vercel.app
    ```
 
 ---
 
-## Step 6: Enable CORS on Backend
+## Step 5: Enable CORS on Backend
 
-### 6.1 Update Backend CORS
+### 5.1 Update Backend CORS
 
-Edit `backend/server.js` to allow your Vercel domain:
+The `backend/server.js` already includes CORS setup. Make sure your Vercel URL is in the allowed origins:
 
 ```javascript
-const cors = require('cors');
-
-// Allow specific origins
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://smart-expense-tracker.vercel.app', // Your Vercel URL
+  'http://127.0.0.1:3000',
+  'https://your-vercel-app.vercel.app', // Your actual Vercel URL
 ];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-}));
 ```
 
-### 6.2 Commit and Push
+> ⚠️ Must include `https://` protocol!
+
+### 5.2 Commit and Push
 
 ```powershell
 git add .
@@ -245,11 +218,13 @@ If you prefer one platform:
 
 | Issue | Solution |
 |-------|----------|
-| MongoDB connection error | Check if IP is whitelisted in Atlas |
-| CORS error | Add your Vercel URL to allowed origins |
+| `POST ...vercel.app/auth/login 404` | **Missing `VITE_API_URL` on Vercel.** Add it in Project Settings → Environment Variables |
+| `CORS error` | Add your exact Vercel URL (with `https://`) to `allowedOrigins` in `server.js` |
+| MongoDB connection error | Check if IP is whitelisted in Atlas Network Access |
 | Build fails on Vercel | Check if `vite.config.js` has correct base path |
 | API not responding | Check Render logs for errors |
 | JWT errors | Ensure `JWT_SECRET` is set in Render env vars |
+| `User already exists` | Use a different email or clear the MongoDB collection |
 
 ---
 

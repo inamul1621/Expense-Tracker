@@ -15,14 +15,19 @@ const app = express();
 // CORS - allow localhost and production frontend
 const allowedOrigins = [
   'http://localhost:3000',
-  'expense-tracker-chi-ten-39.vercel.app', // Your Vercel URL
+  'http://127.0.0.1:3000',
+  'https://expense-tracker-chi-ten-39.vercel.app',
 ];
 
+// Allow all origins in development, restrict in production
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
