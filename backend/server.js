@@ -15,7 +15,7 @@ const app = express();
 // CORS - allow localhost and production frontend
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://127.0.0.1:3000',
+  'expense-tracker-two-vert-96.vercel.app', // Your Vercel URL
 ];
 
 app.use(cors({
