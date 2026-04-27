@@ -279,4 +279,3 @@ frontend/
 ---
 
 **Total Cost: $0 forever** (within free tier limits)
-
