@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+// Use Vite proxy in dev, direct URL in production
+const baseURL = import.meta.env.PROD
+  ? import.meta.env.VITE_API_URL
+  : '/api';
+
 const api = axios.create({
-  baseURL: 'https://expense-tracker-api-b0up.onrender.com/api', // Your Render URL
+  baseURL,
 });
 
 // Request interceptor to add auth token
